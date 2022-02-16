@@ -19,8 +19,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/school', [SchoolController::class, 'index']);
-Route::post('/school', [SchoolController::class, 'store']);
-Route::get('/school/{id}', [SchoolController::class, 'show']);
-Route::put('/school/{id}', [SchoolController::class, 'update']);
-Route::delete('/school/{id}', [SchoolController::class, 'destroy']);
+// Route::get('/school', [SchoolController::class, 'index']);
+// Route::post('/school', [SchoolController::class, 'store']);
+// Route::get('/school/{id}', [SchoolController::class, 'show']);
+// Route::put('/school/{id}', [SchoolController::class, 'update']);
+// Route::delete('/school/{id}', [SchoolController::class, 'destroy']);
+
+Route::resource('/school', SchoolController::class)->except(['create', 'edit']);
