@@ -19,7 +19,9 @@ class AuthController extends Controller
         ]);
 
         if($validator->fails()){
-            return response()->json($validator->errors());
+            return response()->json([
+                'validation_errors'=> $validator->messages(),
+            ]);
         }
 
         $user = User::create([
@@ -28,10 +30,15 @@ class AuthController extends Controller
             'password' => Hash::make($request->password)
          ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $token = $user->createToken($user->email.'_Token')->plainTextToken;
 
         return response()
-            ->json(['data' => $user,'access_token' => $token, 'token_type' => 'Bearer', ]);
+            ->json([
+                'status'=>200,
+                'username'=>$user->name,
+                'token'=>$token,
+                'message' => 'Registered Successfully',
+            ]);
     }
 
     public function login(Request $request)
