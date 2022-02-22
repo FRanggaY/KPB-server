@@ -15,9 +15,9 @@ use App\Http\Controllers\SchoolController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 // Route::get('/school', [SchoolController::class, 'index']);
 // Route::post('/school', [SchoolController::class, 'store']);
@@ -25,4 +25,20 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // Route::put('/school/{id}', [SchoolController::class, 'update']);
 // Route::delete('/school/{id}', [SchoolController::class, 'destroy']);
 
-Route::resource('/school', SchoolController::class)->except(['create', 'edit']);
+// Route::resource('/school', SchoolController::class)->except(['create', 'edit']);
+
+//API route for register new user
+Route::post('/register', [App\Http\Controllers\API\AuthController::class, 'register']);
+//API route for login user
+Route::post('/login', [App\Http\Controllers\API\AuthController::class, 'login']);
+
+//Protecting Routes
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::get('/profile', function(Request $request) {
+        return auth()->user();
+    });
+    Route::resource('/school', SchoolController::class)->except(['create', 'edit']);
+
+    // API route for logout user
+    Route::post('/logout', [App\Http\Controllers\API\AuthController::class, 'logout']);
+});
