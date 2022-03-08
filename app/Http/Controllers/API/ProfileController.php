@@ -71,21 +71,6 @@ class ProfileController extends Controller
         }
 
     }
-    public function deleteProfile($disid)
-    {
-        try{
-            $user = $disid;
-            $data = User::with('additional_user', 'position_user')->where('id', $user->id)->first();
-            return response()->json(['status'=>200,'data'=>$user]);
-
-        }catch(\Exception $e){
-            return response()
-            ->json([
-                'status'=>500,
-                'message'=> $e->getMessage(),
-            ]);
-        }
-    }
     public function showAllUsers()
     {
         try{
