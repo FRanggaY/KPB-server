@@ -19,26 +19,27 @@ use App\Http\Controllers\SchoolController;
 //     return $request->user();
 // });
 
-// Route::get('/school', [SchoolController::class, 'index']);
-// Route::post('/school', [SchoolController::class, 'store']);
-// Route::get('/school/{id}', [SchoolController::class, 'show']);
-// Route::put('/school/{id}', [SchoolController::class, 'update']);
-// Route::delete('/school/{id}', [SchoolController::class, 'destroy']);
-
-// Route::resource('/school', SchoolController::class)->except(['create', 'edit']);
-
 //API route for register new user
-Route::post('/register', [App\Http\Controllers\API\AuthController::class, 'register']);
-//API route for login user
+// Route::post('/register', [App\Http\Controllers\API\AuthController::class, 'register']);
+
+//login user
 Route::post('/login', [App\Http\Controllers\API\AuthController::class, 'login']);
 
 //Protecting Routes
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::get('/profile', function(Request $request) {
-        return auth()->user();
-    });
-    Route::resource('/school', SchoolController::class)->except(['create', 'edit']);
+    //for admin create acc
+    Route::post('/register', [App\Http\Controllers\API\AuthController::class, 'register']);
 
-    // API route for logout user
+    //user
+    Route::get('/profile', [App\Http\Controllers\API\ProfileController::class, 'getProfile']);
+    Route::patch('/update-profile', [App\Http\Controllers\API\ProfileController::class, 'updateProfile']);
     Route::post('/logout', [App\Http\Controllers\API\AuthController::class, 'logout']);
+
+
+    //additional user
+    Route::post('/profile-detail', [App\Http\Controllers\API\ProfileDetailController::class, 'createProfileDetail']);
+    Route::patch('/profile-detail', [App\Http\Controllers\API\ProfileDetailController::class, 'updateProfileDetail']);
+
+
+    Route::get('/users', [App\Http\Controllers\API\ProfileController::class, 'showAllUsers']);
 });
