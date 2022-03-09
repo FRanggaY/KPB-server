@@ -60,6 +60,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 //users
 Route::get('/users', [App\Http\Controllers\API\ProfileController::class, 'showAllUsers']);
+Route::get('/users/{id}', [App\Http\Controllers\API\ProfileController::class, 'showAllUsersPaginate']);
 //Gallery
 Route::get('/gallery', [App\Http\Controllers\API\GalleryController::class, 'index']);
 //Activities
