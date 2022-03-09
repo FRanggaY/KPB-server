@@ -40,9 +40,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/profile-detail', [App\Http\Controllers\API\ProfileDetailController::class, 'createProfileDetail']);
     Route::patch('/profile-detail', [App\Http\Controllers\API\ProfileDetailController::class, 'updateProfileDetail']);
 
-
-    Route::get('/users', [App\Http\Controllers\API\ProfileController::class, 'showAllUsers']);
-
     //PROFILE WEBSITE (VISI, MISI, DESKRIPSI)
     // Route::resource('/profile-web', App\Http\Controllers\API\ProfileDescController::class)->except(['create', 'edit', 'update', 'show', 'destroy']);
     Route::get('/profile-web', [App\Http\Controllers\API\ProfileDescController::class, 'index']);
@@ -51,13 +48,23 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // Route::delete('/delete-profile-web', [App\Http\Controllers\API\ProfileDescController::class, 'destroy']);
 
     //Gallery
-    Route::resource('/gallery', App\Http\Controllers\API\GalleryController::class)->except(['create', 'edit', 'show']);
+    Route::resource('/gallery', App\Http\Controllers\API\GalleryController::class)->except(['create', 'edit', 'show', 'index']);
 
     //Activities
-    Route::resource('/activities', App\Http\Controllers\API\ActivitiesController::class)->except(['create', 'edit', 'show']);
+    Route::resource('/activities', App\Http\Controllers\API\ActivitiesController::class)->except(['create', 'edit', 'show', 'index']);
 
     //Advertisement
-    Route::resource('/advertisement', App\Http\Controllers\API\AdvertisementController::class)->except(['create', 'edit', 'show']);
+    Route::resource('/advertisement', App\Http\Controllers\API\AdvertisementController::class)->except(['create', 'edit', 'show', 'index']);
+
+
 });
 
+//users
+Route::get('/users', [App\Http\Controllers\API\ProfileController::class, 'showAllUsers']);
+//Gallery
+Route::get('/gallery', [App\Http\Controllers\API\GalleryController::class, 'index']);
+//Activities
+Route::get('/activities', [App\Http\Controllers\API\ActivitiesController::class, 'index']);
+//Advertisement
+Route::get('/advertisement', [App\Http\Controllers\API\AdvertisementController::class, 'index']);
 
