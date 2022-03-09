@@ -42,4 +42,14 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 
     Route::get('/users', [App\Http\Controllers\API\ProfileController::class, 'showAllUsers']);
+
+    //PROFILE WEBSITE (VISI, MISI, DESKRIPSI)
+    // Route::resource('/profile-web', App\Http\Controllers\API\ProfileDescController::class)->except(['create', 'edit', 'update', 'show', 'destroy']);
+    Route::get('/profile-web', [App\Http\Controllers\API\ProfileDescController::class, 'index']);
+    Route::post('/profile-web', [App\Http\Controllers\API\ProfileDescController::class, 'store']);
+    Route::patch('/update-profile-web', [App\Http\Controllers\API\ProfileDescController::class, 'update']);
+    // Route::delete('/delete-profile-web', [App\Http\Controllers\API\ProfileDescController::class, 'destroy']);
+
 });
+
+
