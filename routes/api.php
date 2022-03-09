@@ -50,6 +50,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::patch('/update-profile-web', [App\Http\Controllers\API\ProfileDescController::class, 'update']);
     // Route::delete('/delete-profile-web', [App\Http\Controllers\API\ProfileDescController::class, 'destroy']);
 
+    //Gallery
+    Route::resource('/gallery', App\Http\Controllers\API\GalleryController::class)->except(['create', 'edit', 'show']);
 });
 
 
