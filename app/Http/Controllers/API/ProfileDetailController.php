@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\user_additional;
 use App\Models\user_position;
+use App\Models\user_social_media;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -23,6 +24,10 @@ class ProfileDetailController extends Controller
 
                 'position_kpb' => 'required|string|max:255',
                 'position_department' => 'required|string|max:255',
+
+                'facebook' => 'nullable|string',
+                'instagram' => 'nullable|string',
+                'twitter' => 'nullable|string',
 
             ]);
             if($validator->fails()){
@@ -47,12 +52,20 @@ class ProfileDetailController extends Controller
                     'user_id' => $user_auth->id
                 ]);
 
+                $user_social_media = user_social_media::create([
+                    'facebook' => $request->facebook,
+                    'instagram' => $request->instagram,
+                    'twitter' => $request->twitter,
+                    'user_id' => $user_auth->id
+                ]);
+
                 return response([
                     'status' => 200,
                     'message' => 'profile detail create success',
                     'data' => [
                         'user_additional' => $user_additional,
-                        'user_position' => $user_position
+                        'user_position' => $user_position,
+                        'user_social_media' => $user_social_media
                     ]
                 ]);
             }
@@ -76,6 +89,10 @@ class ProfileDetailController extends Controller
 
                 'position_kpb' => 'required|string|max:255',
                 'position_department' => 'required|string|max:255',
+
+                'facebook' => 'nullable|string',
+                'instagram' => 'nullable|string',
+                'twitter' => 'nullable|string',
 
             ]);
             if($validator->fails()){
@@ -108,6 +125,14 @@ class ProfileDetailController extends Controller
                         'position_department' => $request->position_department,
                     ]
                 );
+
+                $user_social_media = user_social_media::where('user_id', $user_id)->update(
+                    [
+                        'facebook' => $request->facebook,
+                        'instagram' => $request->instagram,
+                        'twitter' => $request->twitter,
+                    ]
+                );
                 // $user_position->position_kpb = $request->position_kpb;
                 // $user_position->position_department = $request->position_department;
 
@@ -118,7 +143,8 @@ class ProfileDetailController extends Controller
                     'message' => 'profile change success',
                     'data' => [
                         'user_additional' => $user_additional,
-                        'user_position' => $user_position
+                        'user_position' => $user_position,
+                        'user_social_media' => $user_social_media
                     ]
                 ]);
             }

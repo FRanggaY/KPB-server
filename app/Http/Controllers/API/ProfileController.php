@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 class ProfileController extends Controller
 
@@ -15,7 +16,7 @@ class ProfileController extends Controller
     {
         try{
             $user = auth()->user();
-            $data = User::with('additional_user', 'position_user')->where('id', $user->id)->first();
+            $data = User::with('additional_user', 'position_user', 'social_media_user')->where('id', $user->id)->first();
             return response()->json(['status'=>200,'data'=>$data]);
 
         }catch(\Exception $e){
@@ -49,7 +50,8 @@ class ProfileController extends Controller
                         // Storage::delete($user->profile_picture);
                         File::delete(public_path($user->profile_picture));
                     }
-                    $file_name = time(). '.' . $request->profile_picture->extension();
+                    $random = Str::random(5);
+                    $file_name = time().''.$random. '.' . $request->profile_picture->extension();
                     $request->profile_picture->move(public_path('images/profile'), $file_name);
                     $path = "images/profile/$file_name";
                     $user->profile_picture = $path;
@@ -74,7 +76,7 @@ class ProfileController extends Controller
     public function showAllUsers()
     {
         try{
-            $user = User::with('additional_user', 'position_user')->get();
+            $user = User::with('additional_user', 'position_user', 'social_media_user')->get();
             return response()
             ->json([
                 'status'=>200,

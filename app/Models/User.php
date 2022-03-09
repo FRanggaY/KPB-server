@@ -52,4 +52,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(user_position::class);
     }
+
+    public function social_media_user()
+    {
+        return $this->hasOne(user_social_media::class);
+    }
 }
