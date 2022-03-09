@@ -14,7 +14,7 @@ class AdvertisementController extends Controller
     public function index()
     {
         try{
-            $advertisement = advertisement::paginate(4);
+            $advertisement = advertisement::latest()->paginate(4);
             return response([
                 'status' => 200,
                 'message' => 'advertisement get success',

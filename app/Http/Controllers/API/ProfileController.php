@@ -90,4 +90,22 @@ class ProfileController extends Controller
             ]);
         }
     }
+    public function showAllUsersPaginate($id){
+        try{
+            $user = User::with('position_user', 'social_media_user')->paginate($id);
+            return response()
+            ->json([
+                'status'=>200,
+                'total' => $user->count(),
+                'per_page' => $user->perPage(),
+                'data' => $user->items()
+            ]);
+        }catch(\Exception $e){
+            return response()
+            ->json([
+                'status'=>500,
+                'message'=> $e->getMessage(),
+            ]);
+        }
+    }
 }
