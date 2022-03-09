@@ -52,6 +52,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     //Gallery
     Route::resource('/gallery', App\Http\Controllers\API\GalleryController::class)->except(['create', 'edit', 'show']);
+
+    //Activities
+    Route::resource('/activities', App\Http\Controllers\API\ActivitiesController::class)->except(['create', 'edit', 'show']);
 });
 
 
