@@ -25,11 +25,16 @@ use App\Http\Controllers\SchoolController;
 //login user
 Route::post('/login', [App\Http\Controllers\API\AuthController::class, 'login']);
 
+// Route::middleware(['auth:sanctum','IsAdmin'])->group(function () {
+//     Route::post('/register', [App\Http\Controllers\API\AuthController::class, 'register']);
+// });
+
 //Protecting Routes
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    //for admin create acc
-    Route::post('/register', [App\Http\Controllers\API\AuthController::class, 'register']);
-
+    Route::group(['IsAdmin'] , function () {
+        Route::post('/register', [App\Http\Controllers\API\AuthController::class, 'register']);
+        Route::delete('/delete-user/{id}', [App\Http\Controllers\API\ProfileController::class, 'delete']);
+    });
     //user
     Route::get('/profile', [App\Http\Controllers\API\ProfileController::class, 'getProfile']);
     Route::patch('/update-profile', [App\Http\Controllers\API\ProfileController::class, 'updateProfile']);
@@ -42,8 +47,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     //PROFILE WEBSITE (VISI, MISI, DESKRIPSI)
     // Route::resource('/profile-web', App\Http\Controllers\API\ProfileDescController::class)->except(['create', 'edit', 'update', 'show', 'destroy']);
-    Route::post('/profile-web', [App\Http\Controllers\API\ProfileDescController::class, 'store']);
-    Route::patch('/update-profile-web', [App\Http\Controllers\API\ProfileDescController::class, 'update']);
+    // Route::post('/profile-web', [App\Http\Controllers\API\ProfileDescController::class, 'store']);
+    // Route::patch('/update-profile-web', [App\Http\Controllers\API\ProfileDescController::class, 'update']);
     // Route::delete('/delete-profile-web', [App\Http\Controllers\API\ProfileDescController::class, 'destroy']);
 
     //Gallery
@@ -59,7 +64,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 });
 
 //users
-Route::get('/users', [App\Http\Controllers\API\ProfileController::class, 'showAllUsers']);
+Route::get('/users/detail/{id}', [App\Http\Controllers\API\ProfileController::class, 'showAllUsers']);
 Route::get('/users/{id}', [App\Http\Controllers\API\ProfileController::class, 'showAllUsersPaginate']);
 //Gallery
 Route::get('/gallery', [App\Http\Controllers\API\GalleryController::class, 'index']);

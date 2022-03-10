@@ -14,7 +14,7 @@ class GalleryController extends Controller
     public function index()
     {
         try{
-            $gallery = gallery::paginate();
+            $gallery = gallery::latest()->paginate();
             return response([
                 'status' => 200,
                 'message' => 'gallery get success',

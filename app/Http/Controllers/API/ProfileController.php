@@ -44,6 +44,7 @@ class ProfileController extends Controller
                 $user = User::find($request->user()->id);
                 $user->name = $request->name;
                 $user->email = $request->email;
+                $user->role = $request->role;
 
                 if($request->profile_picture && $request->profile_picture->isValid()){
                     if($user->profile_picture){
@@ -73,10 +74,10 @@ class ProfileController extends Controller
         }
 
     }
-    public function showAllUsers()
+    public function showAllUsers($id)
     {
         try{
-            $user = User::with('additional_user', 'position_user', 'social_media_user')->get();
+            $user = User::with('additional_user', 'position_user', 'social_media_user')->paginate($id);
             return response()
             ->json([
                 'status'=>200,
@@ -100,6 +101,20 @@ class ProfileController extends Controller
                 'per_page' => $user->perPage(),
                 'data' => $user->items()
             ]);
+        }catch(\Exception $e){
+            return response()
+            ->json([
+                'status'=>500,
+                'message'=> $e->getMessage(),
+            ]);
+        }
+    }
+    public function delete($id)
+    {
+        try{
+            $data = User::where('id', $id)->delete();
+            return response()->json(['status'=>200, 'message'=>'success delete','data'=>$data]);
+
         }catch(\Exception $e){
             return response()
             ->json([
