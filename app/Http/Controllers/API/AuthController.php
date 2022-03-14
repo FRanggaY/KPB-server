@@ -60,6 +60,29 @@ class AuthController extends Controller
             ->json(['message' => 'Hi '.$user->name.', welcome to home','access_token' => $token, 'token_type' => 'Bearer', ]);
     }
 
+    public function changePassword(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            'password' => 'required|string|min:8',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'validation_errors'=> $validator->messages(),
+            ]);
+        }else{
+            $user = User::find($request->user()->id);
+            $user->password = Hash::make($request->password);
+            $user->update();
+            return response([
+                'status' => 200,
+                'message' => 'change password success',
+                'data' => $user,
+
+            ]);
+        }
+    }
+
     // method for user logout and delete token
     public function logout()
     {

@@ -88,27 +88,27 @@ class ActivitiesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    // public function show($id)
-    // {
-    //     try{
-    //         // $data = activities::first();
-    //         // $data = activities::find($id);
-    //         if (is_null($data)) {
-    //             return response()->json('Data not found', 404);
-    //         }
-    //         return response([
-    //             'status' => 200,
-    //             'message' => 'activities show success',
-    //             'data' => $data
-    //         ]);
-    //     }catch(\Exception $e){
-    //         return response([
-    //             'status' => 500,
-    //             'message' => 'activities show failed',
-    //             'data' => $e
-    //         ]);
-    //     }
-    // }
+    public function show($id)
+    {
+        try{
+            // $data = activities::first();
+            $data = activities::find($id);
+            if (is_null($data)) {
+                return response()->json('Data not found', 404);
+            }
+            return response([
+                'status' => 200,
+                'message' => 'activities show success',
+                'data' => $data
+            ]);
+        }catch(\Exception $e){
+            return response([
+                'status' => 500,
+                'message' => 'activities show failed',
+                'data' => $e
+            ]);
+        }
+    }
 
     /**
      * Update the specified resource in storage.

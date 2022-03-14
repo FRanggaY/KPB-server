@@ -84,27 +84,27 @@ class GalleryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    // public function show($id)
-    // {
-    //     try{
-    //         // $data = gallery::first();
-    //         // $data = gallery::find($id);
-    //         if (is_null($data)) {
-    //             return response()->json('Data not found', 404);
-    //         }
-    //         return response([
-    //             'status' => 200,
-    //             'message' => 'gallery show success',
-    //             'data' => $data
-    //         ]);
-    //     }catch(\Exception $e){
-    //         return response([
-    //             'status' => 500,
-    //             'message' => 'gallery show failed',
-    //             'data' => $e
-    //         ]);
-    //     }
-    // }
+    public function show($id)
+    {
+        try{
+            // $data = gallery::first();
+            $data = gallery::find($id);
+            if (is_null($data)) {
+                return response()->json('Data not found', 404);
+            }
+            return response([
+                'status' => 200,
+                'message' => 'gallery show success',
+                'data' => $data
+            ]);
+        }catch(\Exception $e){
+            return response([
+                'status' => 500,
+                'message' => 'gallery show failed',
+                'data' => $e
+            ]);
+        }
+    }
 
     /**
      * Update the specified resource in storage.

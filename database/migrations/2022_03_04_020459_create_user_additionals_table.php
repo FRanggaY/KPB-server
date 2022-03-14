@@ -15,7 +15,7 @@ class CreateUserAdditionalsTable extends Migration
     {
         Schema::create('user_additionals', function (Blueprint $table) {
             $table->id();
-            $table->enum('gender', ['male', 'female'])->nullable();
+            $table->string('gender')->nullable();
             $table->string('nip')->nullable();
             $table->string('nik')->nullable();
             $table->string('work_unit')->nullable();

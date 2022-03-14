@@ -42,6 +42,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 
     //additional user
+    Route::patch('/change-password', [App\Http\Controllers\API\AuthController::class, 'changePassword']);
     Route::post('/profile-detail', [App\Http\Controllers\API\ProfileDetailController::class, 'createProfileDetail']);
     Route::patch('/profile-detail', [App\Http\Controllers\API\ProfileDetailController::class, 'updateProfileDetail']);
 
@@ -68,10 +69,13 @@ Route::get('/users/detail/{id}', [App\Http\Controllers\API\ProfileController::cl
 Route::get('/users/{id}', [App\Http\Controllers\API\ProfileController::class, 'showAllUsersPaginate']);
 //Gallery
 Route::get('/gallery', [App\Http\Controllers\API\GalleryController::class, 'index']);
+Route::get('/gallery/{id}', [App\Http\Controllers\API\GalleryController::class, 'show']);
 //Activities
 Route::get('/activities', [App\Http\Controllers\API\ActivitiesController::class, 'index']);
+Route::get('/activities/{id}', [App\Http\Controllers\API\ActivitiesController::class, 'show']);
 //Advertisement
 Route::get('/advertisement', [App\Http\Controllers\API\AdvertisementController::class, 'index']);
+Route::get('/advertisement/{id}', [App\Http\Controllers\API\AdvertisementController::class, 'show']);
 //Profile Website
 Route::get('/profile-web', [App\Http\Controllers\API\ProfileDescController::class, 'index']);
 
