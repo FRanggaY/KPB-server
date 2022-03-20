@@ -13,6 +13,7 @@ class activities extends Model
         'title',
         'description',
         'time',
+        'date',
         'link',
         'image',
     ];

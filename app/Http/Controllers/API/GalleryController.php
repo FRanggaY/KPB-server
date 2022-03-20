@@ -14,13 +14,13 @@ class GalleryController extends Controller
     public function index()
     {
         try{
-            $gallery = gallery::latest()->paginate();
+            $gallery = gallery::get();
             return response([
                 'status' => 200,
                 'message' => 'gallery get success',
-                'total' => $gallery->count(),
-                'per_page' => $gallery->perPage(),
-                'data' => $gallery->items()
+                // 'total' => $gallery->count(),
+                // 'per_page' => $gallery->perPage(),
+                'data' => $gallery
 
             ]);
         }catch(\Exception $e){
@@ -116,21 +116,14 @@ class GalleryController extends Controller
     public function update(Request $request, $id)
     {
         try{
-            $validator = Validator::make($request->all(),[
+            Validator::make($request->all(),[
                 'title' => 'required|string|max:255',
-                'image' => 'required|image',
+                'image' => 'nullable|image',
             ]);
-            if($validator->fails()){
-                $error = $validator->errors()->all()[0];
-                return response()->json([
-                    'status'=>400,
-                    'message'=> $error,
-                ]);
-            }else{
-                $data = gallery::findOrFail($id);
-                $data->title = $request->title;
+            $data = gallery::findOrFail($id);
 
-                if($request->image && $request->image->isValid()){
+            if($request->hasFile('image')){
+                if($request->image){
                     if($data->image){
                         File::delete(public_path($data->image));
                     }
@@ -138,18 +131,23 @@ class GalleryController extends Controller
                     $file_name = time().''.$random. '.' . $request->image->extension();
                     $request->image->move(public_path('images/gallery'), $file_name);
                     $path = "images/gallery/$file_name";
-                    $data->image = $path;
+
+                    $data->update([
+                        'title' => $request->title,
+                        'image' => $path,
+                    ]);
                 }
-
-                // $data->update($request->all());
-                $data->update();
-
-                return response([
-                    'status' => 200,
-                    'message' => 'gallery update success',
-                    'data' => $data
+            }else{
+                $data->update([
+                    'title' => $request->title,
                 ]);
             }
+
+            return response([
+                'status' => 200,
+                'message' => 'gallery update success',
+                'data' => $data
+            ]);
         }catch(\Exception $e){
             return response()
             ->json([

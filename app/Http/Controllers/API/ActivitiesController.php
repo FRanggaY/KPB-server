@@ -14,13 +14,14 @@ class ActivitiesController extends Controller
     public function index()
     {
         try{
-            $activities = activities::paginate();
+            $activities = activities::get();
             return response([
                 'status' => 200,
                 'message' => 'activities get success',
-                'total' => $activities->count(),
-                'per_page' => $activities->perPage(),
-                'data' => $activities->items()
+                'data' => $activities
+                // 'total' => $activities->count(),
+                // 'per_page' => $activities->perPage(),
+                // 'data' => $activities->items()
 
             ]);
         }catch(\Exception $e){
@@ -45,6 +46,7 @@ class ActivitiesController extends Controller
                 'title' => 'required|string|max:255',
                 'description' => 'required|string|max:255',
                 'time' => 'nullable|string|max:255',
+                'date' => 'nullable',
                 'link' => 'nullable|string',
                 'image' => 'nullable|image',
             ]);
@@ -64,6 +66,7 @@ class ActivitiesController extends Controller
                 'title' => $request->title,
                 'description' => $request->description,
                 'time' => $request->time,
+                'date' => $request->date,
                 'link' => $request->link,
                 'image' => $path,
              ]);
@@ -120,27 +123,18 @@ class ActivitiesController extends Controller
     public function update(Request $request, $id)
     {
         try{
-            $validator = Validator::make($request->all(),[
+            Validator::make($request->all(),[
                 'title' => 'required|string|max:255',
                 'description' => 'required|string|max:255',
                 'time' => 'nullable|string|max:255',
+                'date' => 'nullable',
                 'link' => 'nullable|string',
                 'image' => 'nullable|image',
             ]);
-            if($validator->fails()){
-                $error = $validator->errors()->all()[0];
-                return response()->json([
-                    'status'=>400,
-                    'message'=> $error,
-                ]);
-            }else{
-                $data = activities::findOrFail($id);
-                $data->title = $request->title;
-                $data->description = $request->description;
-                $data->time = $request->time;
-                $data->link = $request->link;
+            $data = activities::findOrFail($id);
 
-                if($request->image && $request->image->isValid()){
+            if($request->hasFile('image')){
+                if($request->image){
                     if($data->image){
                         File::delete(public_path($data->image));
                     }
@@ -148,18 +142,31 @@ class ActivitiesController extends Controller
                     $file_name = time().''.$random. '.' . $request->image->extension();
                     $request->image->move(public_path('images/activities'), $file_name);
                     $path = "images/activities/$file_name";
-                    $data->image = $path;
+
+                    $data->update([
+                        'title' => $request->title,
+                        'date' => $request->date,
+                        'description' => $request->description,
+                        'time' => $request->time,
+                        'link' => $request->link,
+                        'image' => $path,
+                    ]);
                 }
-
-                // $data->update($request->all());
-                $data->update();
-
-                return response([
-                    'status' => 200,
-                    'message' => 'activities update success',
-                    'data' => $data
+            }else{
+                $data->update([
+                    'title' => $request->title,
+                    'date' => $request->date,
+                    'description' => $request->description,
+                    'time' => $request->time,
+                    'link' => $request->link,
                 ]);
             }
+
+            return response([
+                'status' => 200,
+                'message' => 'activities update success',
+                'data' => $data
+            ]);
         }catch(\Exception $e){
             return response()
             ->json([

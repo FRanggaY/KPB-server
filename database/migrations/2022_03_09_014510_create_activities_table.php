@@ -19,7 +19,8 @@ class CreateActivitiesTable extends Migration
             $table->string('description')->nullable();
             $table->string('time')->nullable();
             $table->string('image')->nullable();
-            $table->string('link');
+            $table->string('link')->nullable();
+            $table->date('date')->nullable();
             $table->timestamps();
         });
     }

@@ -91,6 +91,25 @@ class ProfileController extends Controller
             ]);
         }
     }
+
+    public function showAllUsersList()
+    {
+        try{
+            $user = User::with('additional_user', 'position_user', 'social_media_user')->get();
+            return response()
+            ->json([
+                'status'=>200,
+                'data'=> $user,
+            ]);
+        }catch(\Exception $e){
+            return response()
+            ->json([
+                'status'=>500,
+                'message'=> $e->getMessage(),
+            ]);
+        }
+    }
+
     public function showAllUsersPaginate($id){
         try{
             $user = User::with('position_user', 'social_media_user')->paginate($id);

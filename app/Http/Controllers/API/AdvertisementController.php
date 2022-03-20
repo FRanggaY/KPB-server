@@ -14,13 +14,13 @@ class AdvertisementController extends Controller
     public function index()
     {
         try{
-            $advertisement = advertisement::latest()->paginate(4);
+            $advertisement = advertisement::get();
             return response([
                 'status' => 200,
                 'message' => 'advertisement get success',
-                'total' => $advertisement->count(),
-                'per_page' => $advertisement->perPage(),
-                'data' => $advertisement->items()
+                // 'total' => $advertisement->count(),
+                // 'per_page' => $advertisement->perPage(),
+                'data' => $advertisement
 
             ]);
         }catch(\Exception $e){
@@ -118,23 +118,15 @@ class AdvertisementController extends Controller
     public function update(Request $request, $id)
     {
         try{
-            $validator = Validator::make($request->all(),[
+            Validator::make($request->all(),[
                 'title' => 'required|string|max:255',
                 'link' => 'required|string',
-                'image' => 'required|image',
+                'image' => 'nullable|image',
             ]);
-            if($validator->fails()){
-                $error = $validator->errors()->all()[0];
-                return response()->json([
-                    'status'=>400,
-                    'message'=> $error,
-                ]);
-            }else{
-                $data = advertisement::findOrFail($id);
-                $data->title = $request->title;
-                $data->link = $request->link;
+            $data = advertisement::findOrFail($id);
 
-                if($request->image && $request->image->isValid()){
+            if($request->hasFile('image')){
+                if($request->image){
                     if($data->image){
                         File::delete(public_path($data->image));
                     }
@@ -142,18 +134,25 @@ class AdvertisementController extends Controller
                     $file_name = time().''.$random. '.' . $request->image->extension();
                     $request->image->move(public_path('images/advertisement'), $file_name);
                     $path = "images/advertisement/$file_name";
-                    $data->image = $path;
+
+                    $data->update([
+                        'title' => $request->title,
+                        'link' => $request->link,
+                        'image' => $path,
+                    ]);
                 }
-
-                // $data->update($request->all());
-                $data->update();
-
-                return response([
-                    'status' => 200,
-                    'message' => 'advertisement update success',
-                    'data' => $data
+            }else{
+                $data->update([
+                    'title' => $request->title,
+                    'link' => $request->link,
                 ]);
             }
+
+            return response([
+                'status' => 200,
+                'message' => 'advertisement update success',
+                'data' => $data
+            ]);
         }catch(\Exception $e){
             return response()
             ->json([
