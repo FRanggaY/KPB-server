@@ -30,41 +30,40 @@ class ProfileController extends Controller
     public function updateProfile(Request $request)
     {
         try{
-            $validator = Validator::make($request->all(),[
+            Validator::make($request->all(),[
                 'name' => 'required|string|max:255',
                 'profile_picture' => 'nullable|image'
             ]);
-            if($validator->fails()){
-                $error = $validator->errors()->all()[0];
-                return response()->json([
-                    'status'=>400,
-                    'message'=> $error,
-                ]);
-            }else{
-                $user = User::find($request->user()->id);
-                $user->name = $request->name;
-                $user->email = $request->email;
-                $user->role = $request->role;
-
-                if($request->profile_picture && $request->profile_picture->isValid()){
-                    if($user->profile_picture){
-                        // Storage::delete($user->profile_picture);
-                        File::delete(public_path($user->profile_picture));
+            $data = User::find($request->user()->id);
+            if($request->hasFile('profile_picture')){
+                if($request->profile_picture){
+                    if($data->profile_picture){
+                        File::delete(public_path($data->profile_picture));
                     }
                     $random = Str::random(5);
                     $file_name = time().''.$random. '.' . $request->profile_picture->extension();
                     $request->profile_picture->move(public_path('images/profile'), $file_name);
                     $path = "images/profile/$file_name";
-                    $user->profile_picture = $path;
-                }
-                $user->update();
-                return response([
-                    'status' => 200,
-                    'message' => 'profile change success',
-                    'data' => $user,
 
+                    $data->update([
+                        'name' => $request->name,
+                        'email' => $request->email,
+                        'role' => $request->role,
+                        'profile_picture' => $path,
+                    ]);
+                }
+            }else{
+                $data->update([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'role' => $request->role,
                 ]);
             }
+            return response([
+                'status' => 200,
+                'message' => 'profile change success',
+                'data' => $data
+            ]);
         }catch(\Exception $e){
             return response()
             ->json([
